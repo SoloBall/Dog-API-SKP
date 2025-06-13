@@ -1,0 +1,58 @@
+﻿@using dog_api.Models;
+@model CombinedResponse
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>dog</title>
+
+</head>
+<body>
+
+    <h4>choose dog</h4>
+    <br />
+    <form asp-controller="Home" asp-action="Index" method="get">
+        <select id="breed" name="breed" style="max-width:auto">
+            @foreach (KeyValuePair<string, string[]> breed in Model.breeds.message)
+            {
+                for (int i = 0; i < breed.Value.Count(); i++)
+                {
+                    if (Context.Request.Query["breed"].ToString() == breed.Value[i] + " " + breed.Key)
+                    {
+                        <option selected value="@breed.Value[i] @breed.Key">@breed.Value[i] @breed.Key</option>
+                    }
+                    else
+                    {
+                        <option value="@breed.Value[i] @breed.Key">@breed.Value[i] @breed.Key</option> //uhhhh : make it fetch the last searched breed
+                    }
+                }
+                if (Context.Request.Query["breed"].ToString() == breed.Key)
+                {
+                    <option selected value="@breed.Key">@breed.Key</option>
+                }
+                else
+                {
+                    <option value="@breed.Key">@breed.Key</option>
+                }
+            }
+        </select>
+        <button type="submit">Fetch</button>
+        <p>@Context.Request.Query["breed"].ToString()</p>
+    </form>
+<hr />
+    @if (Model.dog == null)
+    {
+        <p>please choose dog</p>
+    }
+
+    else
+    {
+        <img src="@Model.dog.message" style="max-width:100%; max-height:10%" />
+    }
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
+</body>
+</html>
